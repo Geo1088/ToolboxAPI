@@ -1,15 +1,27 @@
 import XCTest
 @testable import ToolboxAPI
 
+let jsonString = """
+{
+    "ver": 6,
+    "blob": "eJyrVkpPzTc0sLBQsqpWyitWsoquVipRsjI0NbU0NjQwNzXQUcpTslLyLFEvVkhUKE5NLkotUSjJV0gtSy2qzM9LVdJRKgcq11HKBZK1sbW1AKKCF4Q="
+}
+"""
+
 final class ToolboxAPITests: XCTestCase {
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(ToolboxAPI().text, "Hello, World!")
+    func testUsernotesData() {
+        debugPrint()
+
+        guard let usernotes = try? UsernotesData(parseJSON: jsonString) else { return }
+
+        debugPrint(try! deflateBlob(usernotes.users))
+
+        XCTAssertEqual(usernotes.ver, 6)
+
+        debugPrint()
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testUsernotesData", testUsernotesData),
     ]
 }
