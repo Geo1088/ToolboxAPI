@@ -17,6 +17,7 @@ public class UsernotesData {
 
     public let ver: Int
     public let users: JSON
+    public let constants: [String: JSON]
 
 //    var notes: [RawUsernote]
 
@@ -26,10 +27,14 @@ public class UsernotesData {
     private init(json: JSON) throws {
         guard let ver = json["ver"].int else { throw ToolboxAPIError.invalidData }
         self.ver = ver
+
         guard self.ver <= UsernotesData.latestKnownSchema else { throw ToolboxAPIError.schemaTooNew }
         guard self.ver >= UsernotesData.earliestKnownSchema else { throw ToolboxAPIError.schemaTooOld }
 
         // TODO: Schema upgrades
+
+        guard let constants = json["constants"].dictionary else { throw ToolboxAPIError.invalidData }
+        self.constants = constants
 
         guard let blob = json["blob"].string else { throw ToolboxAPIError.invalidData }
         guard let users = try? ToolboxBlob.inflate(blob) else { throw ToolboxAPIError.invalidData }
@@ -55,6 +60,7 @@ public class UsernotesData {
         }
         return JSON([
             "ver": self.ver,
+            "constants": self.constants,
             "blob": blob,
         ])
     }
@@ -77,7 +83,19 @@ public class UsernotesData {
             return []
         }
         return notes.map { note in
-            Usernote(user: user, text: note["n"].string ?? "", mod: nil, type: nil, link: nil, date: nil)
+            // Look up mod name from constants
+            var mod: String? = nil
+            if let modIndex = note["m"].int {
+                mod = constants["users"]?[modIndex].string
+            }
+
+            return Usernote(
+                user: user,
+                text: note["n"].string ?? "",
+                mod: mod,
+                type: nil,
+                link: nil,
+                date: nil)
         }
     }
 }
