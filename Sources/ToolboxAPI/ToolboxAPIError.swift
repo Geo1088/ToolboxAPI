@@ -1,5 +1,5 @@
 /// Errors related to parsing Toolbox data from wiki pages.
-enum ToolboxAPIError: Error {
+public enum ToolboxAPIError: Error {
     /// This version of the library can't handle the page's schema version.
     case schemaTooOld
     /// This version of the library can't handle the page's schema version.

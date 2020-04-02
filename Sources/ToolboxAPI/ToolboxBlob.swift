@@ -4,7 +4,7 @@ import SwiftyJSON
 /// Provides static methods for converting between JSON and
 public class ToolboxBlob {
     /// Converts a Toolbox blob into a JSON object.
-    static func inflate(_ blob: String) throws -> JSON {
+    public static func inflate(_ blob: String) throws -> JSON {
 
         // Base64 to raw data
         guard let data = Data(base64Encoded: blob) else { throw ToolboxAPIError.invalidData }
@@ -17,7 +17,7 @@ public class ToolboxBlob {
     }
 
     /// Converts a JSON object into a Toolbox blob.
-    static func deflate(_ json: JSON) throws -> String {
+    public static func deflate(_ json: JSON) throws -> String {
 
         // Use blank serialization options to ensure the string doesn't get pretty-printed
         let options = JSONSerialization.WritingOptions()

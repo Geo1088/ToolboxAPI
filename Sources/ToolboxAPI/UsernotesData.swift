@@ -8,20 +8,21 @@ public class UsernotesData {
     // MARK: Constants
 
     /// The latest usernotes schema version that this library can handle. If a usernotes page reports a schema version higher than this number, it can't be processed with this version of the library.
-    static let latestKnownSchema = 6;
+    public static let latestKnownSchema = 6;
 
     /// The earliest usernotes schema version that this library can handle. If a usernotes page reports a schema version lower than this number, it can't be processed with this version of the library.
-    static let earliestKnownSchema = 4;
+    public static let earliestKnownSchema = 4;
     
     // MARK: Instance properties
 
-    let ver: Int
-    let users: JSON
+    public let ver: Int
+    public let users: JSON
 
 //    var notes: [RawUsernote]
 
     // MARK: Initializers
-    
+
+    // TODO: does this need to be private? was originally marked private to ensure that users didn't pass JSON instances that could still be modified outside the library
     private init(json: JSON) throws {
         guard let ver = json["ver"].int else { throw ToolboxAPIError.invalidData }
         self.ver = ver
@@ -35,14 +36,14 @@ public class UsernotesData {
         self.users = users
     }
 
-    convenience init(data: Data) throws {
+    public convenience init(data: Data) throws {
         guard let json = try? JSON(data: data) else {
             throw ToolboxAPIError.invalidData
         }
         try self.init(json: json)
     }
     
-    convenience init?(parseJSON: String) throws {
+    public convenience init?(parseJSON: String) throws {
         try self.init(json: JSON(parseJSON: parseJSON))
     }
 

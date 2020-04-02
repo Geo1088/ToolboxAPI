@@ -1,41 +1,41 @@
 import Foundation
 
 /// A raw usernote representation.
-struct RawUsernote {
+public struct RawUsernote: Hashable {
     /// Timestamp (seconds since epoch)
-    let t: Int?
+    public let t: Int?
     /// Note text
-    let n: String?
+    public let n: String?
     /// Index in constants.users of moderator who left this note
-    let m: Int?
+    public let m: Int?
     /// Index in constants.warnings of this note's type's key
-    let w: Int?
+    public let w: Int?
     /// Permalink of note context, in shortened format
-    let l: String?
+    public let l: String?
 }
 
 /// A usernote type, e.g. "Permanant ban", "Good contributor", etc.
-public struct UsernoteType {
+public struct UsernoteType: Hashable {
     /// The name of the note type
-    let name: String
+    public let name: String
     /// The color associated with this note type
-    let color: String // TODO: return this as a friendlier type
+    public let color: String // TODO: return this as a friendlier type
     /// The internal storage key used for the note type
-    let key: String
+    public let key: String
 }
 
 /// A single usernote.
-public struct Usernote {
+public struct Usernote: Hashable {
     /// The name of the user associated with the note
-    let user: String
+    public let user: String
     /// The text of the note
-    let text: String
+    public let text: String
     /// The name of the moderator who left the note
-    let mod: String?
+    public let mod: String?
     /// The type of the note
-    let type: UsernoteType?
+    public let type: UsernoteType?
     /// The context link for the note
-    let link: String?
+    public let link: String?
     /// The date and time of the note's creation
-    let date: Date?
+    public let date: Date?
 }
