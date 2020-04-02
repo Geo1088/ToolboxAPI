@@ -20,12 +20,7 @@ public class ToolboxBlob {
     static func deflate(_ json: JSON) throws -> String {
 
         // Use blank serialization options to ensure the string doesn't get pretty-printed
-        var options: JSONSerialization.WritingOptions
-        if #available(OSX 10.13, *) {
-            options = JSONSerialization.WritingOptions.sortedKeys
-        } else {
-            options = JSONSerialization.WritingOptions()
-        }
+        let options = JSONSerialization.WritingOptions()
 
         // Convert JSON to string
         guard let string = json.rawString([.jsonSerialization: options]) else { throw ToolboxAPIError.invalidData }
