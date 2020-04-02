@@ -66,4 +66,17 @@ public class UsernotesData {
     public func asData() -> Data? {
         return self.asString()?.data(using: .utf8)
     }
+
+    // MARK: - Getting usernotes
+
+    /// Returns all usernotes on a specific user.
+    public func notes(onUser user: String) -> [Usernote] {
+        // If the user isn't in the users map, return no notes
+        guard let notes = self.users[user]["ns"].array else {
+            return []
+        }
+        return notes.map { note in
+            Usernote(user: user, text: note["n"].string ?? "", mod: nil, type: nil, link: nil, date: nil)
+        }
+    }
 }

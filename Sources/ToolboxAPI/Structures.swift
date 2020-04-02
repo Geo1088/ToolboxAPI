@@ -37,5 +37,5 @@ public struct Usernote {
     /// The context link for the note
     let link: String?
     /// The date and time of the note's creation
-    let date: Date
+    let date: Date?
 }

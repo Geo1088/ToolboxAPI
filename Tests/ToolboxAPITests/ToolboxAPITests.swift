@@ -11,15 +11,24 @@ let jsonStrings = ["""
 final class ToolboxAPITests: XCTestCase {
     func testUsernotesData() {
         for string in jsonStrings {
-            let usernotes = try! UsernotesData(parseJSON: string)
+            let usernotes = try! UsernotesData(parseJSON: string)! as UsernotesData
             XCTAssertNotNil(usernotes, "wat")
-            let string = usernotes!.asString()
+
+            let string = usernotes.asString()
             XCTAssertNotNil(string, "wat")
             XCTAssertFalse(string!.contains("\n"), "Output must be minified")
-            let data = usernotes!.asData()
+
+            let data = usernotes.asData()
             XCTAssertNotNil(data, "wat")
+
             let otherUsernotes = try! UsernotesData(data: data!)
-            // TODO: test data equality
+            // TODO: test data equality between usernotes and otherUsernotes
+
+            let username = "geo1088"
+            let notesForUser = usernotes.notes(onUser: username)
+            debugPrint(notesForUser)
+            XCTAssertEqual(notesForUser[0].user, username, "Username should match")
+            XCTAssertEqual(notesForUser[0].text, "It's a secret to everyone", "Note text should match")
         }
     }
 
