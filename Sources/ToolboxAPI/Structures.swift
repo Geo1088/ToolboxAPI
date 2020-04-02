@@ -15,7 +15,7 @@ struct RawUsernote {
 }
 
 /// A usernote type, e.g. "Permanant ban", "Good contributor", etc.
-struct UsernoteType {
+public struct UsernoteType {
     /// The name of the note type
     let name: String
     /// The color associated with this note type
@@ -25,7 +25,7 @@ struct UsernoteType {
 }
 
 /// A single usernote.
-struct Usernote {
+public struct Usernote {
     /// The name of the user associated with the note
     let user: String
     /// The text of the note
