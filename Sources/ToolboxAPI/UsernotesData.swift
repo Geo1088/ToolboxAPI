@@ -15,9 +15,9 @@ public class UsernotesData {
     
     // MARK: Instance properties
 
-    public let ver: Int
-    public let users: JSON
-    public let constants: [String: JSON]
+    let ver: Int
+    let users: JSON
+    let constants: [String: JSON]
 
 //    var notes: [RawUsernote]
 
