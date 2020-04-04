@@ -4,7 +4,7 @@ Swift helpers for interfacing with Reddit Moderator Toolbox usernotes and settin
 
 This repo is heavily in development. It currently only supports reading usernotes from individual users, and will always report `nil` for dates, note types, and and links.
 
-## Intallation
+## Installation
 
 **Note:** It's recommended to install via the `master` branch rather than a specific commit/version until a 1.0 release is made.
 
@@ -52,7 +52,7 @@ usernotes.notes(onUser: "geo1088").forEach { note in
 }
 ```
 
-The library also defined structures to represent usernotes and note types (`Usernote` and `UsernoteType` respectively), as well as a `ToolboxBlob` class with static methods for converting between JSON objects and Toolbox's compressed base64 blob strings. You shouldn't need to invoke this class normally, but it's exposed for completeness.
+The library also defines structures to represent usernotes and note types (`Usernote` and `UsernoteType` respectively), as well as a `ToolboxBlob` class with static methods for converting between JSON objects and Toolbox's compressed base64 blob strings. You shouldn't need to invoke this class normally, but it's exposed for completeness.
 
 ## License
 
