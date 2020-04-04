@@ -23,7 +23,7 @@ dependencies: [
 Add this repository in your `Podfile`:
 
 ```ruby
-pod 'ToolboxAPI', :git => 'https://github.com/Alamofire/Alamofire.git', :branch => 'master'
+pod 'ToolboxAPI', :git => 'https://github.com/Geo1088/ToolboxAPI.git', :branch => 'master'
 ```
 
 Then run `pod install` to fetch the latest version.
