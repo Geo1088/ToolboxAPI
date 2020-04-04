@@ -8,7 +8,7 @@ let jsonStrings = ["""
 final class ToolboxAPITests: XCTestCase {
     func testUsernotesData() {
         for string in jsonStrings {
-            let usernotes = try! UsernotesData(parseJSON: string)! as UsernotesData
+            let usernotes = try! UsernotesData(parseJSON: string) as UsernotesData
             XCTAssertNotNil(usernotes, "wat")
 
             let string = usernotes.asString()
@@ -31,7 +31,46 @@ final class ToolboxAPITests: XCTestCase {
         }
     }
 
+    func testOldUsernotes() {
+        let oldUsernotes = try! UsernotesData(parseJSON: """
+        {
+            "ver": 5,
+            "constants": {"users": ["geo1088"], "warnings": ["gooduser"]},
+            "data": {
+                "person": {
+                    "ns": [
+                        {
+                            "n": "dab",
+                            "t": 1
+                        }
+                    ]
+                }
+            }
+        }
+        """)
+        print(oldUsernotes.asString()! as Any)
+
+        let olderUsernotes = try! UsernotesData(parseJSON: """
+        {
+            "ver": 4,
+            "constants": {"users": ["geo1088"], "warnings": ["gooduser"]},
+            "data": {
+                "person": {
+                    "ns": [
+                        {
+                            "n": "dab",
+                            "t": 1000
+                        }
+                    ]
+                }
+            }
+        }
+        """)
+        print(olderUsernotes.asString()! as Any)
+    }
+
     static var allTests = [
         ("testUsernotesData", testUsernotesData),
+        ("testOldUsernotes", testOldUsernotes)
     ]
 }

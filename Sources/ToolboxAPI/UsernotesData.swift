@@ -5,7 +5,7 @@ import Gzip
 /// TODO
 public class UsernotesData {
 
-    // MARK: Constants
+    // MARK: - Constants
 
     /// The latest usernotes schema version that this library can handle. If a usernotes page reports a schema version higher than this number, it can't be processed with this version of the library.
     public static let latestKnownSchema = 6;
@@ -13,25 +13,47 @@ public class UsernotesData {
     /// The earliest usernotes schema version that this library can handle. If a usernotes page reports a schema version lower than this number, it can't be processed with this version of the library.
     public static let earliestKnownSchema = 4;
     
-    // MARK: Instance properties
+    // MARK: - Instance properties
 
-    let ver: Int
     let users: JSON
     let constants: [String: JSON]
 
-//    var notes: [RawUsernote]
+    // MARK: - Initializers
 
-    // MARK: Initializers
-
-    // TODO: does this need to be private? was originally marked private to ensure that users didn't pass JSON instances that could still be modified outside the library
-    private init(json: JSON) throws {
+    public init(_ inputJSON: JSON) throws {
+        // TODO: We have to make a copy of the JSON object so we can modify it. Is there a better way?
+        guard var json = try? inputJSON.merged(with: JSON([:])) else { throw ToolboxAPIError.invalidData }
         guard let ver = json["ver"].int else { throw ToolboxAPIError.invalidData }
-        self.ver = ver
 
-        guard self.ver <= UsernotesData.latestKnownSchema else { throw ToolboxAPIError.schemaTooNew }
-        guard self.ver >= UsernotesData.earliestKnownSchema else { throw ToolboxAPIError.schemaTooOld }
+        // Check if we can work with this schema
+        guard ver <= UsernotesData.latestKnownSchema else { throw ToolboxAPIError.schemaTooNew }
+        guard ver >= UsernotesData.earliestKnownSchema else { throw ToolboxAPIError.schemaTooOld }
 
-        // TODO: Schema upgrades
+        // Schema upgrades
+        switch ver {
+        case 4:
+            // Version 4 specifies timestamps in milliseconds, version 5+ uses seconds
+            guard let users = json["data"].dictionary else { throw ToolboxAPIError.invalidData }
+            for (user, value) in users {
+                guard let notes = value["ns"].array else { throw ToolboxAPIError.invalidData }
+                for (index, note) in notes.enumerated() {
+                    if note["t"].int != nil {
+                        json["data"][user]["ns"][index]["t"].int = note["t"].intValue / 1000
+                    }
+                }
+            }
+            fallthrough
+
+        case 5:
+            // Version 5 uses a "data" key with raw JSON, version 6+ uses a "blob" key
+            do {
+                json["blob"].string = try ToolboxBlob.deflate(json["data"])
+                json["data"].string = nil
+            } catch {
+                throw ToolboxAPIError.invalidData
+            }
+        default: break
+        }
 
         guard let constants = json["constants"].dictionary else { throw ToolboxAPIError.invalidData }
         self.constants = constants
@@ -45,21 +67,22 @@ public class UsernotesData {
         guard let json = try? JSON(data: data) else {
             throw ToolboxAPIError.invalidData
         }
-        try self.init(json: json)
+        try self.init(json)
     }
     
-    public convenience init?(parseJSON: String) throws {
-        try self.init(json: JSON(parseJSON: parseJSON))
+    public convenience init(parseJSON: String) throws {
+        try self.init(JSON(parseJSON: parseJSON))
     }
 
-    // MARK: Data retrieval
+    // MARK: - Data finalization
 
     public func asJSON() -> JSON? {
         guard let blob = try? ToolboxBlob.deflate(self.users) else {
             return nil
         }
         return JSON([
-            "ver": self.ver,
+            // Usernotes are always updated to the latest version when they're read
+            "ver": UsernotesData.latestKnownSchema,
             "constants": self.constants,
             "blob": blob,
         ])
